@@ -1,0 +1,9 @@
+{% if latest_files %}
+    <ul>
+    {% for file in latest_files %}
+        <li>{{ file.filename }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No hay archivos.</p>
+{% endif %}
