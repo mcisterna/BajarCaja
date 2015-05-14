@@ -1,0 +1,62 @@
+{% extends 'home.html' %}
+
+{% block scripts %}
+
+<script type='text/javascript'>
+$(document).ready(function(){
+	$(".checkboxes").click(function(){
+		var f_id = $(this).attr("id");
+		var csrftoken = $("input[name='csrfmiddlewaretoken']").attr('value');
+		$.ajax({
+			type:'POST',
+			url: "{% url 'swap_public' %}",
+			data: {file_id:f_id,csrfmiddlewaretoken: csrftoken},
+			success:function(data){
+				$('#span'+f_id).html(data.estado);
+				if(data.publicado){
+					$('#share_url_title').html('URL para compartir');
+					$('#share_url').html(data.share_url);
+				}
+				else{
+					$('#share_url_title').html('');
+					$('#share_url').html('');
+				}
+			}
+		});
+	});
+});
+</script>
+
+{% endblock %}
+
+{% block content %}
+	{% csrf_token %}
+	{% if latest_files %}
+	    <table>
+	    	<thead>
+	    		<td>Nombre Archivo</td>
+	    		<td>Tamaño</td>
+	    		<td>Fecha de publicación</td>
+	    		<td>Estado de archivo</td>
+	    		<td>Publicado</td>
+	    		<td>Eliminar</td>
+	    		<td id='share_url_title'></td>
+	    	</thead>
+	    	<tbody>
+			    {% for file in latest_files %}
+			    	<tr>
+			        	<td>{{ file.filename }}</td>
+			        	<td>{{ file.size|floatformat:2 }} {{ file.scale_sz }} </td>
+			        	<td> {{ file.upload_date }}</td>
+			        	<td><span id='span{{file.id}}'>{% if file.public %} Público {% else %} Privado {% endif %}</span></td>
+			        	<td><input type='checkbox' class='checkboxes' id='{{file.id}}' {% if file.public %} checked {% else %}{% endif %}></td>
+			        	<td><a href="{% url 'delete_file' file_id=file.id %}">Eliminar</a></td>
+			        	<td id='share_url'></td>
+			        </tr>
+			    {% endfor %}
+			</tbody>
+	    </table>
+	{% else %}
+	    <p>No hay archivos.</p>
+	{% endif %}
+{% endblock %}

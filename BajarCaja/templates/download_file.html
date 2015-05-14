@@ -1,0 +1,22 @@
+{% extends 'home.html' %}
+
+{% block content %}
+
+Descargar el siguiente archivo:
+
+	<table>
+		<thead>
+			<td>Nombre Archivo</td>
+			<td>Tamaño</td>
+			<td>Fecha de publicación</td>
+		</thead>
+		<tbody>
+			<tr>
+				<td>{{ file.filename }}</td>
+				<td>{{ file.size|floatformat:2 }} {{ file.scale_sz }} </td>
+				<td>{{ file.upload_date }}</td>
+			</tr>
+		</tbody>
+	</table>
+	<a href="{% url 'download_file' file_id=file.id %}?download=yes" download>Descargar</a>
+{% endblock %}

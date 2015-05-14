@@ -1,0 +1,18 @@
+<html lang='es'>
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+		<title>Bajar Caja</title>
+		{% load staticfiles %}
+		<script type="text/javascript" src="{% static 'jquery.min.js' %}"></script>
+		{% block scripts %}{% endblock %}
+	</head>
+	<body>
+		<a href="{% url 'show_files' %}">Ver archivos</a> <br>
+		<a href="{% url 'upload_file' %}">Subir un archivo</a>
+
+		<div id='content'>
+			{% block content %}{% endblock %}
+		</div>
+
+	</body>
+</html>

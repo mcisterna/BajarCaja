@@ -1,0 +1,27 @@
+{% extends 'home.html' %}
+
+
+{% block content %}
+	¿Desea eliminar el siguiente archivo?
+	<table>
+		<thead>
+			<td>Nombre Archivo</td>
+			<td>Tamaño</td>
+			<td>Fecha de publicación</td>
+			<td>Estado de archivo</td>
+		</thead>
+		<tbody>
+			<tr>
+				<td>{{ file.filename }}</td>
+				<td>{{ file.size|floatformat:2 }} {{ file.scale_sz }} </td>
+				<td> {{ file.upload_date }}</td>
+				<td><span>{% if file.public %} Público {% else %} Privado {% endif %}</span></td>
+			</tr>
+		</tbody>
+	</table>
+	<form action="{% url 'delete_file' file_id=file.id %}" method="POST">
+		{% csrf_token %}
+		<input type="submit" value="Eliminar" />
+	</form>
+	Si el archivo es eliminado no podrá ser recuperado
+{% endblock %}
