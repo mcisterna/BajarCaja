@@ -1,2 +1,3 @@
 *.pyc
 BajarCaja/uploads/*
+.venv
