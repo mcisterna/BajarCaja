@@ -9,7 +9,8 @@ urlpatterns = patterns('',
     url(r'^download_file/(?P<file_id>\d+)$',views.download_file,name='download_file'),
     url(r'^swap_public/$',views.swap_public,name='swap_public'),
     url(r'^delete_file/(?P<file_id>\d+)$',views.delete_file,name='delete_file'),
-    url('^', include('django.contrib.auth.urls')),
+    url(r'^login/', 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
+    url(r'^logout/', 'django.contrib.auth.views.logout', {'next_page': '/'}),
     url(r'^register/$', views.register, name='register')
 
 )
