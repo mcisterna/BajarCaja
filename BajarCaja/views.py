@@ -51,7 +51,8 @@ def upload_file(request):
 						size=size,
 						real_size=the_file.size,
 						scale_sz = scale,
-						public=form['choices']=='publico')
+						public=form['choices']=='publico',
+						user=request.user)
 			file_db.save()
 			msg = 'Archivo %s subido exitosamente.' % (the_file.name)
 	data = {'form':UploadForm(initial={'choices':'privado'}),
@@ -71,6 +72,7 @@ def download_file(request,file_id):
 		return response
 	return render(request,'download_file.html',{'file':the_file})
 
+@login_required
 def swap_public(request):
 	if request.method == "POST":
 		file_id = request.POST['file_id']
@@ -86,6 +88,7 @@ def swap_public(request):
 		return JsonResponse(data)
 	raise Http404
 
+@login_required
 def delete_file(request,file_id):
 	the_file = get_object_or_404(File,id=file_id)
 	if request.method == 'POST':
