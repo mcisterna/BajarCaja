@@ -8,17 +8,20 @@ from django.conf import settings
 from datetime import datetime
 from django.core.servers.basehttp import FileWrapper
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 
 import mimetypes,os
 
 def home(request):
 	return render(request,'home.html',{})
 
+@login_required
 def show_files(request):
 	latest_files = File.objects.order_by('-upload_date')
 	context ={'latest_files': latest_files,}
 	return render(request,'show_files.html',context)
 
+@login_required
 def upload_file(request):
 	msg = ''
 	if request.method == 'POST':
