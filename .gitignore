@@ -3,3 +3,4 @@ BajarCaja/uploads/*
 project.sublime-project
 project.sublime-workspace
 .venv
+db.sqlite3
