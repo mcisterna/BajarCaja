@@ -3,10 +3,12 @@ from django.shortcuts import render,get_object_or_404, redirect
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, JsonResponse, Http404
 from BajarCaja.models import File
-from forms import UploadForm
+from forms import UploadForm, RegisterForm
 from django.conf import settings
 from datetime import datetime
 from django.core.servers.basehttp import FileWrapper
+from django.contrib.auth.models import User
+
 import mimetypes,os
 
 def home(request):
@@ -88,4 +90,19 @@ def delete_file(request,file_id):
 		the_file.delete()
 		return redirect('show_files')
 	return render(request,'delete_file.html',{'file':the_file})
-	
+
+def register(request):
+	if request.method == 'POST':
+		form = RegisterForm(request.POST)
+		if form.is_valid():
+			data = form.cleaned_data
+			User.objects.create_user(
+				data['username'],
+				data['email'],
+				data['password'],
+				first_name=data['first_name'],
+				last_name=data['last_name'])
+			return redirect('home')
+		else:
+			return render(request, 'register.html', {'form': form}, status=422)
+	return render(request, 'register.html', {'form': RegisterForm()})

@@ -7,8 +7,21 @@
 		{% block scripts %}{% endblock %}
 	</head>
 	<body>
+
+		{% if not user.is_authenticated %}
+		<form method="post" action="{% url 'login' %}">
+			{% csrf_token %}
+			<label for="login_username">Usuario </label>
+			<input name="username" id="login_username"><br>
+			<label for="login_password">Contraseña </label>
+			<input name="password" type="password" id="login_password"><br>
+			<button type="submit">Ingresar</button>
+		</form>
+		<a href="{% url 'register' %}">Crear una nueva cuenta</a> <br>
+		{% else %}
 		<a href="{% url 'show_files' %}">Ver archivos</a> <br>
 		<a href="{% url 'upload_file' %}">Subir un archivo</a>
+		{% endif %}
 
 		<div id='content'>
 			{% block content %}{% endblock %}
