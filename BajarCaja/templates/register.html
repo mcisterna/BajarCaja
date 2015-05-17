@@ -1,7 +1,9 @@
 <h2>Datos de la nueva cuenta</h2>
 <form method="post" action="{% url 'register' %}">
   {% csrf_token %}
-  {{ form.as_table }}
+  <table>
+    {{ form.as_table }}
+  </table>
   <br>
   <button type="submit">Crear nueva cuenta</button>
 </form>
