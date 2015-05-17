@@ -86,3 +86,4 @@ STATIC_URL = '/static/'
 # AUTH shit
 
 LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/login/'
