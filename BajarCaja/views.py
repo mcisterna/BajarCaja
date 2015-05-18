@@ -106,6 +106,11 @@ def register(request):
 		form = RegisterForm(request.POST)
 		if form.is_valid():
 			data = form.cleaned_data
+			already_exists = (
+				User.objects.filter(username=data['username']).count() != 0)
+			if already_exists:
+				form.add_error('username', 'El nombre de usuario ya existe.')
+				return render(request, 'register.html', {'form': form}, status=409)
 			User.objects.create_user(
 				data['username'],
 				data['email'],
