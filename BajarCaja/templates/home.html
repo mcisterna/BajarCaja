@@ -54,6 +54,11 @@
 
 		<div class="container" id='content' style="padding-top: 10px">
 			{% block content %}
+				{% if msg %}
+				<div class="alert alert-success">
+					{{ msg }}
+				</div>
+				{% endif %}
 				<div class="starter-template">
 					<h1>BajarCaja: Comparte tus archivos</h1>
 					<p class="lead">Descubre la nueva manera de compartir archivos con BajarCaja.<br> Comenzar es sencillo; sólo registrate y empieza a compartir!</p>

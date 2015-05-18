@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 import mimetypes,os
 
 def home(request):
-	return render(request,'home.html',{})
+	return render(request,'home.html', {'msg': request.GET.get('msg', None)})
 
 @login_required
 def show_files(request):
@@ -154,7 +154,7 @@ def register(request):
 				last_name=data['last_name'])
 			user_capacity = User_capacity(user=user)
 			user_capacity.save()
-			return redirect('home')
+			return redirect('/?msg=El%20usuario%20ha%20sido%20registrado%20exitosamente')
 		else:
 			return render(request, 'register.html', {'form': form}, status=422)
 	return render(request, 'register.html', {'form': RegisterForm()})
