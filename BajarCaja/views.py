@@ -60,7 +60,11 @@ def upload_file(request):
 	return render(request,'upload_file.html',data)
 
 def download_file(request,file_id):
-	the_file = get_object_or_404(File,id=file_id,public=True)
+	the_file = get_object_or_404(File,id=file_id)
+	user_owns_file = (request.user.is_authenticated() and
+		request.user.id == the_file.user.id)
+	if not the_file.public and not user_owns_file:
+		return render(request, 'forbidden.html', status=403)
 	if request.method == 'GET' and 'download' in request.GET and request.GET['download'] == 'yes':
 		wrapper = FileWrapper(file(the_file.filepath))
 		mimetype = mimetypes.guess_type(the_file.filepath)[0]
