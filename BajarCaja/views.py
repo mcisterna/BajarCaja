@@ -17,7 +17,7 @@ def home(request):
 
 @login_required
 def show_files(request):
-	latest_files = File.objects.order_by('-upload_date')
+	latest_files = File.objects.filter(user=request.user).order_by('-upload_date')
 	context ={'latest_files': latest_files,}
 	return render(request,'show_files.html',context)
 
