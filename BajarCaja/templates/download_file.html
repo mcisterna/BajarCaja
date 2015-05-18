@@ -2,9 +2,9 @@
 
 {% block content %}
 
-Descargar el siguiente archivo:
+<p>Descargar el siguiente archivo:</p>
 
-	<table>
+	<table class="table">
 		<thead>
 			<td>Nombre Archivo</td>
 			<td>Tamaño</td>
@@ -20,5 +20,5 @@ Descargar el siguiente archivo:
 			</tr>
 		</tbody>
 	</table>
-	<a href="{% url 'download_file' file_id=file.id %}?download=yes" download>Descargar</a>
+	<a class="btn btn-default" href="{% url 'download_file' file_id=file.id %}?download=yes" download>Descargar</a>
 {% endblock %}
