@@ -17,7 +17,7 @@ def home(request):
 
 @login_required
 def show_files(request):
-	latest_files = File.objects.order_by('-upload_date')
+	latest_files = File.objects.filter(user=request.user).order_by('-upload_date')
 	context ={'latest_files': latest_files,}
 	return render(request,'show_files.html',context)
 
@@ -79,7 +79,11 @@ def upload_file(request):
 	return render(request,'upload_file.html',data)
 
 def download_file(request,file_id):
-	the_file = get_object_or_404(File,id=file_id,public=True)
+	the_file = get_object_or_404(File,id=file_id)
+	user_owns_file = (request.user.is_authenticated() and
+		request.user.id == the_file.user.id)
+	if not the_file.public and not user_owns_file:
+		return render(request, 'forbidden.html', status=403)
 	if request.method == 'GET' and 'download' in request.GET and request.GET['download'] == 'yes':
 		wrapper = FileWrapper(file(the_file.filepath))
 		mimetype = mimetypes.guess_type(the_file.filepath)[0]
@@ -96,6 +100,8 @@ def swap_public(request):
 	if request.method == "POST":
 		file_id = request.POST['file_id']
 		the_file = get_object_or_404(File,id=file_id)
+		if the_file.user.id != request.user.id:
+			return JsonResponse({'msg': "You don't own this file!"}, status=403)
 		the_file.public = not the_file.public
 		estado = 'Público' if the_file.public else 'Privado'
 		the_file.save()
@@ -110,6 +116,8 @@ def swap_public(request):
 @login_required
 def delete_file(request,file_id):
 	the_file = get_object_or_404(File,id=file_id)
+	if the_file.user.id != request.user.id:
+		return render(request, 'forbidden.html', status=403)
 	if request.method == 'POST':
 		user_capacity = User_capacity.objects.get(user=request.user)
 		user_capacity.capacity = user_capacity.capacity + the_file.size
@@ -133,6 +141,11 @@ def register(request):
 		form = RegisterForm(request.POST)
 		if form.is_valid():
 			data = form.cleaned_data
+			already_exists = (
+				User.objects.filter(username=data['username']).count() != 0)
+			if already_exists:
+				form.add_error('username', 'El nombre de usuario ya existe.')
+				return render(request, 'register.html', {'form': form}, status=409)
 			user = User.objects.create_user(
 				data['username'],
 				data['email'],
