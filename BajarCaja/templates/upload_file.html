@@ -2,7 +2,11 @@
 
 {% load bootstrap %}
 {% block content %}
-	{{ msg }}
+	{% if msg %}
+	<div class="alert alert-info">
+		{{ msg }}
+	</div>
+	{% endif %}
 	<form class="form-horizontal" action="{% url 'upload_file' %}" method="POST" enctype="multipart/form-data">
 		{% csrf_token %}
 
