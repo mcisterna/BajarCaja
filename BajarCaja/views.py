@@ -2,7 +2,7 @@
 from django.shortcuts import render,get_object_or_404, redirect
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, JsonResponse, Http404
-from BajarCaja.models import File
+from BajarCaja.models import File,User_capacity
 from forms import UploadForm, RegisterForm
 from django.conf import settings
 from datetime import datetime
@@ -27,10 +27,17 @@ def upload_file(request):
 	if request.method == 'POST':
 		form = UploadForm(request.POST,request.FILES)
 		if form.is_valid():
+			user_capacity = User_capacity.objects.get(user=request.user)
 			form = form.cleaned_data
 			the_file = form['upload_file']
-			user_name = 'user'
+			user_name = request.user.username
 			size = the_file.size
+			capacity = user_capacity.capacity
+			if capacity - size < 0:
+				msg = 'Su archivo no pudo ser subido, excede su capacidad de almacenamiento (%s)' % (str(user_capacity))
+				data = {'form':UploadForm(initial={'choices':'privado'}),
+						'msg':msg}
+				return render(request,'upload_file.html',data)
 			scale = 'B'
 			if size > 1048576: # mayor a 1 MB
 				size = size / 1048576.0
@@ -54,6 +61,18 @@ def upload_file(request):
 						public=form['choices']=='publico',
 						user=request.user)
 			file_db.save()
+			user_capacity.capacity = capacity - the_file.size
+			if user_capacity.capacity >= 1048576: # mayor a 1 MB
+				user_capacity.capacity_show = user_capacity.capacity / 1048576.0
+				user_capacity.scale_sz = 'MB'
+			elif user_capacity.capacity >= 1024: # mayor a 1 KB
+				user_capacity.capacity_show = user_capacity.capacity / 1024.0
+				user_capacity.scale_sz = 'KB'
+			else:
+				user_capacity.capacity_show = user_capacity.capacity / 1.0
+				user_capacity.scale_sz = 'B'
+			user_capacity.save()
+
 			msg = 'Archivo %s subido exitosamente.' % (the_file.name)
 	data = {'form':UploadForm(initial={'choices':'privado'}),
 			'msg':msg}
@@ -100,7 +119,19 @@ def delete_file(request,file_id):
 	if the_file.user.id != request.user.id:
 		return render(request, 'forbidden.html', status=403)
 	if request.method == 'POST':
+		user_capacity = User_capacity.objects.get(user=request.user)
+		user_capacity.capacity = user_capacity.capacity + the_file.size
+		if user_capacity.capacity >= 1048576: # mayor a 1 MB
+			user_capacity.capacity_show = user_capacity.capacity / 1048576.0
+			user_capacity.scale_sz = 'MB'
+		elif user_capacity.capacity >= 1024: # mayor a 1 KB
+			user_capacity.capacity_show = user_capacity.capacity / 1024.0
+			user_capacity.scale_sz = 'KB'
+		else:
+			user_capacity.capacity_show = user_capacity.capacity / 1.0
+			user_capacity.scale_sz = 'B'
 		os.remove(the_file.filepath)
+		user_capacity.save()
 		the_file.delete()
 		return redirect('show_files')
 	return render(request,'delete_file.html',{'file':the_file})
@@ -115,12 +146,14 @@ def register(request):
 			if already_exists:
 				form.add_error('username', 'El nombre de usuario ya existe.')
 				return render(request, 'register.html', {'form': form}, status=409)
-			User.objects.create_user(
+			user = User.objects.create_user(
 				data['username'],
 				data['email'],
 				data['password'],
 				first_name=data['first_name'],
 				last_name=data['last_name'])
+			user_capacity = User_capacity(user=user)
+			user_capacity.save()
 			return redirect('home')
 		else:
 			return render(request, 'register.html', {'form': form}, status=422)
