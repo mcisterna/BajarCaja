@@ -77,6 +77,8 @@ def swap_public(request):
 	if request.method == "POST":
 		file_id = request.POST['file_id']
 		the_file = get_object_or_404(File,id=file_id)
+		if the_file.user.id != request.user.id:
+			return JsonResponse({'msg': "You don't own this file!"}, status=403)
 		the_file.public = not the_file.public
 		estado = 'Público' if the_file.public else 'Privado'
 		the_file.save()
@@ -91,6 +93,8 @@ def swap_public(request):
 @login_required
 def delete_file(request,file_id):
 	the_file = get_object_or_404(File,id=file_id)
+	if the_file.user.id != request.user.id:
+		return render(request, 'forbidden.html', status=403)
 	if request.method == 'POST':
 		os.remove(the_file.filepath)
 		the_file.delete()
