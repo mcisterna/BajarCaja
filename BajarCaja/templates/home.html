@@ -22,7 +22,7 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="#">Bajar Caja</a>
+					<a class="navbar-brand" href="{% url 'home' %}">Bajar Caja</a>
 				</div>
 				<div id="navbar" class="collapse navbar-collapse">
 					<ul class="nav navbar-nav">
@@ -32,14 +32,27 @@
 						{% else %}
 						<li><a href="{% url 'show_files' %}">Ver mis archivos</a>
 						<li><a href="{% url 'upload_file' %}">Subir un archivo</a>
-						<li><a href="{% url 'django.contrib.auth.views.logout' %}">Terminar sesión</a>
 						{% endif %}
 					</ul>
+					{% if user.is_authenticated %}
+					<ul class="nav navbar-nav navbar-right">
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+								<span class="glyphicon glyphicon-user"></span>
+								{{ user.username }}
+								<span class="caret"></span>
+							</a>
+							<ul class="dropdown-menu" role="menu">
+								<li><a href="{% url 'django.contrib.auth.views.logout' %}">Terminar sesión</a></li>
+							</ul>
+						</li>
+					</ul>
+					{% endif %}
 				</div><!--/.nav-collapse -->
 			</div>
 		</nav>
 
-		<div class="container" id='content'>
+		<div class="container" id='content' style="padding-top: 10px">
 			{% block content %}
 				<div class="starter-template">
 					<h1>BajarCaja: Comparte tus archivos</h1>

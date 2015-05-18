@@ -1,9 +1,13 @@
+{% extends "home.html" %}
+
+{% block content %}
+{% load bootstrap %}
+
 <h2>Datos de la nueva cuenta</h2>
-<form method="post" action="{% url 'register' %}">
+<form class="form-horizontal" method="post" action="{% url 'register' %}">
   {% csrf_token %}
-  <table>
-    {{ form.as_table }}
-  </table>
-  <br>
-  <button type="submit">Crear nueva cuenta</button>
+  {{ form|bootstrap_horizontal }}
+  <button class="btn btn-default pull-right" type="submit">Crear nueva cuenta</button>
 </form>
+
+{% endblock %}
