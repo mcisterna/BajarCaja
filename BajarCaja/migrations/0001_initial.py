@@ -29,4 +29,17 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
+        migrations.CreateModel(
+            name='User_capacity',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('capacity', models.IntegerField(default=10485760)),
+                ('capacity_show', models.FloatField(default=10.0)),
+                ('scale_sz', models.CharField(default=b'MB', max_length=2)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
     ]

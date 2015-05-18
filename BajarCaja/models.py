@@ -14,3 +14,11 @@ class File(models.Model):
 
 	def __unicode__(self):
 		return "Name: "+self.filename+", Size: "+str(self.size)
+
+class User_capacity(models.Model):
+	user = models.ForeignKey(User)
+	capacity = models.IntegerField(default=10485760)
+	capacity_show = models.FloatField(default=10.0)
+	scale_sz = models.CharField(max_length=2,default='MB')
+	def __unicode__(self):
+		return '%.2f %s' % (self.capacity_show,self.scale_sz)

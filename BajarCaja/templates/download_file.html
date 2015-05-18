@@ -9,12 +9,14 @@ Descargar el siguiente archivo:
 			<td>Nombre Archivo</td>
 			<td>Tamaño</td>
 			<td>Fecha de publicación</td>
+			<td>Dueño</td>
 		</thead>
 		<tbody>
 			<tr>
 				<td>{{ file.filename }}</td>
 				<td>{{ file.size|floatformat:2 }} {{ file.scale_sz }} </td>
 				<td>{{ file.upload_date }}</td>
+				<td>{{ file.user.username }}</td>
 			</tr>
 		</tbody>
 	</table>
