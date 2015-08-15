@@ -10,27 +10,30 @@ class RegisterForm(forms.Form):
 	username = forms.CharField(
 		label="Nombre de Usuario",
 		max_length=32,
-		required=True)
+		required=True,
+		widget=forms.TextInput(attrs={'autocomplete':'off'}))
 	password = forms.CharField(
 		label="Contraseña",
 		min_length=5,
 		max_length=32,
-		widget=forms.PasswordInput(),
+		widget=forms.PasswordInput(attrs={'autocomplete':'off'}),
 		required=True)
 	password_confirmation = forms.CharField(
 		label="Confirmar Contraseña",
-		widget=forms.PasswordInput(),
+		widget=forms.PasswordInput(attrs={'autocomplete':'off'}),
 		min_length=5,
 		max_length=32,
 		required=True)
-	email = forms.EmailField(label="Email", max_length=128, required=False)
+	email = forms.EmailField(label="Email", max_length=128, required=False,widget=forms.EmailInput(attrs={'autocomplete':'off'}))
 	first_name = forms.CharField(
 		label="Nombre",
 		max_length=128,
-		required=False)
+		required=False,
+		widget=forms.TextInput(attrs={'autocomplete':'off'}))
 	last_name = forms.CharField(label="Apellido",
 		max_length=128,
-		required=False)
+		required=False,
+		widget=forms.TextInput(attrs={'autocomplete':'off'}))
 
 	def clean(self):
 		cleaned_data = super(RegisterForm, self).clean()

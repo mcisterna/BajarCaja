@@ -3,7 +3,7 @@
 {% block content %}
 
 {% load bootstrap %}
-<form class="form-horizontal" method="post" action="{% url 'django.contrib.auth.views.login' %}">
+<form class="form-horizontal" method="post" autocomplete='off' action="{% url 'django.contrib.auth.views.login' %}">
 {% csrf_token %}
 {{ form|bootstrap_horizontal }}
 <button class="btn btn-default pull-right" type="submit">Ingresar</button>
