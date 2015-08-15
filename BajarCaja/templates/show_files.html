@@ -13,14 +13,6 @@ $(document).ready(function(){
 			data: {file_id:f_id,csrfmiddlewaretoken: csrftoken},
 			success:function(data){
 				$('#span'+f_id).html(data.estado);
-				if(data.publicado){
-					$('#share_url_title').html('URL para compartir');
-					$('#share_url').html(data.share_url);
-				}
-				else{
-					$('#share_url_title').html('');
-					$('#share_url').html('');
-				}
 			}
 		});
 	});
@@ -32,26 +24,28 @@ $(document).ready(function(){
 {% block content %}
 	{% csrf_token %}
 	{% if latest_files %}
-	    <table>
+	    <table class="table table-striped">
 	    	<thead>
-	    		<td>Nombre Archivo</td>
-	    		<td>Tamaño</td>
-	    		<td>Fecha de publicación</td>
-	    		<td>Estado de archivo</td>
-	    		<td>Publicado</td>
-	    		<td>Eliminar</td>
-	    		<td id='share_url_title'></td>
+	    		<th>Archivo</th>
+	    		<th>Tamaño</th>
+	    		<th>Fecha de publicación</th>
+	    		<th>Estado de archivo</th>
+	    		<th>Publicado</th>
+	    		<th>Eliminar</th>
 	    	</thead>
 	    	<tbody>
 			    {% for file in latest_files %}
 			    	<tr>
-			        	<td>{{ file.filename }}</td>
+			        	<td>
+			        		<a href="{% url 'download_file' file_id=file.id %}">
+			        		{{ file.filename }}
+			        		</a>
+			        	</td>
 			        	<td>{{ file.size|floatformat:2 }} {{ file.scale_sz }} </td>
 			        	<td> {{ file.upload_date }}</td>
 			        	<td><span id='span{{file.id}}'>{% if file.public %} Público {% else %} Privado {% endif %}</span></td>
 			        	<td><input type='checkbox' class='checkboxes' id='{{file.id}}' {% if file.public %} checked {% else %}{% endif %}></td>
 			        	<td><a href="{% url 'delete_file' file_id=file.id %}">Eliminar</a></td>
-			        	<td id='share_url'></td>
 			        </tr>
 			    {% endfor %}
 			</tbody>

@@ -2,8 +2,8 @@
 
 
 {% block content %}
-	¿Desea eliminar el siguiente archivo?
-	<table>
+	<p>¿Desea eliminar el siguiente archivo?</p>
+	<table class="table">
 		<thead>
 			<td>Nombre Archivo</td>
 			<td>Tamaño</td>
@@ -21,7 +21,9 @@
 	</table>
 	<form action="{% url 'delete_file' file_id=file.id %}" method="POST">
 		{% csrf_token %}
-		<input type="submit" value="Eliminar" />
+		<button class="btn btn-danger" type="submit">
+			Eliminar
+		</button>
 	</form>
-	Si el archivo es eliminado no podrá ser recuperado
+	<p>Si el archivo es eliminado no podrá ser recuperado</p>
 {% endblock %}

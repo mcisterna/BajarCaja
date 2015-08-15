@@ -1,23 +1,19 @@
 {% extends 'home.html' %}
 
-
+{% load bootstrap %}
 {% block content %}
-	{{ msg }}
-	<form action="{% url 'upload_file' %}" method="POST" enctype="multipart/form-data">
+	{% if msg %}
+	<div class="alert alert-info">
+		{{ msg }}
+	</div>
+	{% endif %}
+	<form class="form-horizontal" action="{% url 'upload_file' %}" method="POST" enctype="multipart/form-data">
 		{% csrf_token %}
-		<table>
-		<tr>
-			<td><label>Seleccionar archivo</label>:</td>
-			<td>{{form.upload_file}}</td>
-		</tr><br>
-		<tr>
-			<td rowspan="2"><label>Visualización</label>:</td>
-			<td>{{ form.choices.0 }}</td>
-		</tr>
-		<tr>
-			<td>{{ form.choices.1 }}</td>
-		</tr>
-		</table><br>
-		<input type="submit" value="Subir" />
+
+		{{ form|bootstrap_horizontal }}
+
+		<button type="submit" class="btn btn-default pull-right">
+			Subir
+		</button>
 	</form>
 {% endblock %}
